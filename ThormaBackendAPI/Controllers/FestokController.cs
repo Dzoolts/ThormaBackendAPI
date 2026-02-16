@@ -25,15 +25,7 @@ namespace ThormaBackendAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Festo>>> GetFestok()
         {
-            return Ok(await _context.Festok
-            .Select(k => new
-            {
-                k.Nev,
-                k.Szuletett,
-                k.Meghalt,
-                k.Kepek,
-            })
-            .ToListAsync());
+            return await _context.Festok.ToListAsync();
         }
 
         // GET: api/Festok/5
