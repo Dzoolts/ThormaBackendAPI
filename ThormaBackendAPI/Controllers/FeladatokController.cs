@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace ThormaBackendAPI.Controllers
     [Route("api/[controller]")]
 
     [ApiController]
-
+    [Authorize]
     public class FeladatokController : ControllerBase
 
     {
