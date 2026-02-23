@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ThormaBackendAPI.Data;
 using ThormaBackendAPI.Models;
 
@@ -12,6 +13,8 @@ namespace ThormaBackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "User,Admin")]
+
     public class FestokController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -45,6 +48,7 @@ namespace ThormaBackendAPI.Controllers
         // PUT: api/Festok/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutFesto(int id, Festo festo)
         {
             if (id != festo.Azon)
@@ -76,6 +80,7 @@ namespace ThormaBackendAPI.Controllers
         // POST: api/Festok
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Festo>> PostFesto(Festo festo)
         {
             _context.Festok.Add(festo);
@@ -86,6 +91,7 @@ namespace ThormaBackendAPI.Controllers
 
         // DELETE: api/Festok/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteFesto(int id)
         {
             var festo = await _context.Festok.FindAsync(id);

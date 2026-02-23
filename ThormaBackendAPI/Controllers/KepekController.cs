@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ThormaBackendAPI.Data;
 using ThormaBackendAPI.Models;
 
@@ -12,6 +13,7 @@ namespace ThormaBackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "User,Admin")]
     public class KepekController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -44,7 +46,20 @@ namespace ThormaBackendAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Kep>> GetKep(string id)
         {
-            var kep = await _context.Kepek.FindAsync(id);
+            var kep = Ok(await _context.Kepek
+            .Select(k => new
+            {
+                 k.Leltar,
+                 k.Cim,
+                 k.Keszult,
+                 k.Anyag,
+                 k.Technika,
+                 k.Szeles,
+                 k.Magas,
+                 FestoNev = k.Festo != null ? k.Festo.Nev : null
+            })
+            .Where(k => k.Leltar == id)
+            .FirstOrDefaultAsync());
 
             if (kep == null)
             {
@@ -57,6 +72,7 @@ namespace ThormaBackendAPI.Controllers
         // PUT: api/Kepek/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutKep(string id, Kep kep)
         {
             if (id != kep.Leltar)
@@ -88,6 +104,7 @@ namespace ThormaBackendAPI.Controllers
         // POST: api/Kepek
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Kep>> PostKep(Kep kep)
         {
             _context.Kepek.Add(kep);
@@ -112,6 +129,7 @@ namespace ThormaBackendAPI.Controllers
 
         // DELETE: api/Kepek/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteKep(string id)
         {
             var kep = await _context.Kepek.FindAsync(id);
